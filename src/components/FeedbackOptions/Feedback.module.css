@@ -1,3 +1,14 @@
 .btn {
   margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #afaeae;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: rgba(59, 186, 245, 0.712);
+}
+
+.btnAll {
+  margin-bottom: 20px;
 }
