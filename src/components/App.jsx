@@ -1,37 +1,25 @@
 import { Component } from 'react';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Section } from './Section/Section';
+import { Statistics } from './Statistics/Statistics';
+import { Notification } from './Notification/Notification';
 
-export class App extends Component {
+export default class App extends Component {
   state = {
     good: 0,
     neutral: 0,
     bad: 0,
-    total: 0,
-    positivePercentage: 0,
   };
 
-  feedbackGood = () => {
-    this.setState({ good: this.state.good + 1 });
+  onLeaveFeedback = options => {
+    this.setState(prevState => ({ [options]: prevState[options] + 1 }));
   };
-  feedbackNeutral = () => {
-    this.setState({ neutral: this.state.neutral + 1 });
-  };
-  feedbackBad = () => {
-    this.setState({ bad: this.state.bad + 1 });
-  };
+
   countTotalFeedback = () => {
-    // return this.state.good + this.state.neutral + this.state.bad;
-
-    this.setState({
-      total: this.state.good + this.state.neutral + this.state.bad,
-    });
+    return this.state.good + this.state.neutral + this.state.bad;
   };
   countPositiveFeedbackPercentage = () => {
-    //return (this.state.good / this.state.total) * 100;
-
-    this.setState({
-      positivePercentage: (this.state.good / this.countTotalFeedback()) * 100,
-    });
-    console.log(this.state.positivePercentage);
+    return parseInt((this.state.good / this.countTotalFeedback()) * 100);
   };
 
   render() {
@@ -47,32 +35,24 @@ export class App extends Component {
           color: '#010101',
         }}
       >
-        <h2>Please leave feedback</h2>
-        <div>
-          <button onClick={this.feedbackGood}>Good</button>
-          <button onClick={this.feedbackNeutral}>Nautral</button>
-          <button onClick={this.feedbackBad}>Bad</button>
-        </div>
-        <h3>Statistics</h3>
-        <p>
-          Good: <span good={this.state.good}>{this.state.good}</span>
-        </p>
-        <p>
-          Neutral:<span neutral={this.state.neutral}>{this.state.neutral}</span>
-        </p>
-        <p>
-          Bad: <span bad={this.state.bad}>{this.state.bad}</span>
-        </p>
-        <p>
-          Total:
-          <span total={this.state.total}>{this.state.total}</span>
-        </p>
-        <p>
-          Positive feedback:
-          <span posFeedback={this.state.positivePercentage}>
-            {this.state.positivePercentage}%
-          </span>
-        </p>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.onLeaveFeedback}
+          />
+          {this.countTotalFeedback() > 0 ? (
+            <Statistics
+              title="Statistics"
+              good={this.state.good}
+              neutral={this.state.neutral}
+              bad={this.state.bad}
+              total={this.countTotalFeedback()}
+              positivePercentage={this.countPositiveFeedbackPercentage()}
+            />
+          ) : (
+            <Notification message="There is no feedback" />
+          )}
+        </Section>
       </div>
     );
   }
